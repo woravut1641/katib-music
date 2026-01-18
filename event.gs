@@ -44,7 +44,7 @@ function keywords(userId, text, replyToken = null) {
       },
     ]);
   } else if (text === "สุ่มเพลง") {
-    
+
     return replyMessages(replyToken, [
       {
         type: "text",

@@ -29,3 +29,22 @@ function doPost(e) {
     ).setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+function doGet(e) {
+  try {
+    const text = getUserProfiles("U3501afcbc63220dea81088f18475fcfd");
+    Logger.log(text);
+    return ContentService.createTextOutput(
+      JSON.stringify(text),
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    addLogError(
+      "doPost...ErrorCatch",
+      error.name + " : " + error.message + " : " + error.stack,
+    );
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", message: error.message }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+

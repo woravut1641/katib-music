@@ -143,14 +143,31 @@ function broadcastMessages(messages) {
 }
 
 function getUserProfiles(userId) {
-  const url = "https://api.line.me/v2/bot/profile/" + userId;
-  const responseJson = UrlFetchApp.fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN,
-    },
-  });
-  return JSON.parse(responseJson);
+  try {
+    const url = "https://api.line.me/v2/bot/profile/" + userId;
+    const response = UrlFetchApp.fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN,
+      },
+    });
+
+    if (response.getResponseCode() !== 200) {
+      addLogError(
+        "getUserProfiles...ErrorCode " + response.getResponseCode(),
+        response,
+      );
+    }
+
+    return JSON.parse(response);
+  } catch (error) {
+    addLogError(
+      "getUserProfiles...ErrorCatch",
+      error.name + " : " + error.message,
+    );
+
+    return {};
+  }
 }
 // Line API ---->
