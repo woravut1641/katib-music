@@ -54,12 +54,20 @@ function keywords(userId, text, replyToken = null) {
     ]);
   } else if (text === "สุ่มเพลง") {
     const music = getMusicRandom();
+    if (!music) {
+      return replyMessages(replyToken, [
+        {
+          type: "text",
+          text: "ไม่พบคอร์ดเพลง",
+        },
+      ]);
+    }
+
     const arr = [
       "Chord: " + music[0],
       "Metronome: " + music[4],
       "Link: " + music[2],
     ];
-
     return replyMessages(replyToken, [
       {
         type: "text",
@@ -74,7 +82,6 @@ function keywords(userId, text, replyToken = null) {
   } else if (text.indexOf("คอร์ด") !== -1) {
     const name = text.replace(/^คอร์ด\s*/, "");
     const music = getMusic(name);
-
     if (!music) {
       return replyMessages(replyToken, [
         {
@@ -84,10 +91,15 @@ function keywords(userId, text, replyToken = null) {
       ]);
     }
 
+    const arr = [
+      "Chord: " + music[0],
+      "Metronome: " + music[4],
+      "Link: " + music[2],
+    ];
     return replyMessages(replyToken, [
       {
         type: "text",
-        text: "คอร์ดเพลง " + music[0],
+        text: arr.join("\n"),
       },
       {
         type: "image",
