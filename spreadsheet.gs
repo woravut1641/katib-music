@@ -96,6 +96,26 @@ function getMusic(text) {
   return musicData;
 }
 
+function getMusicRandom() {
+  const sheetFile = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = sheetFile.getSheetByName("music");
+  const lastRow = sheet.getLastRow();
+  const lastCol = sheet.getLastColumn();
+
+  // ไม่มีข้อมูล
+  if (lastRow < 2) {
+    return null;
+  }
+
+  // ดึงข้อมูลทั้งหมด (ไม่เอา header)
+  const musics = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+  // สุ่ม index
+  const randIndex = Math.floor(Math.random() * musics.length);
+
+  return musics[randIndex];
+}
+
 // SetFunction
 // function setPromptPay(userId, number) {
 //   const sheetFile = SpreadsheetApp.getActiveSpreadsheet();

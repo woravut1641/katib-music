@@ -1,7 +1,8 @@
 function follow(event) {
   let userId = event.source.userId;
   let userProfiles = getUserProfiles(userId);
-  let replyText = "สวัสดีคุณ " + userProfiles.displayName + " รับอะไรดีคะ";
+  let replyText =
+    "สวัสดีคุณ " + userProfiles.displayName + " ให้น้องช่วยอะไรดีคะ";
   addMember(userProfiles);
   return replyMessages(event.replyToken, replyText);
 }
@@ -14,7 +15,7 @@ function message(event) {
 
 function keywords(userId, text, replyToken = null) {
   if (text === "userId") {
-    return replyMessages(replyToken, "userId ของคุณคือ " + userId);
+    return replyMessages(replyToken, "userId ของคุณคือ \n" + userId);
   } else if (text === "เมนู") {
     // แสดงเมนูให้เลือก
     return replyMessages(replyToken, [
@@ -27,8 +28,8 @@ function keywords(userId, text, replyToken = null) {
               type: "action",
               action: {
                 type: "message",
-                label: "คอร์ด {ชื่อเพลง}",
-                text: "คอร์ด {ชื่อเพลง}",
+                label: "คอร์ด {{ชื่อเพลง}}",
+                text: "คอร์ด {{ชื่อเพลง}}",
               },
             },
             {
@@ -43,178 +44,49 @@ function keywords(userId, text, replyToken = null) {
         },
       },
     ]);
+  } else if (text === "น้องๆ") {
+    // แสดงเมนูให้เลือก
+    return replyMessages(replyToken, [
+      {
+        type: "text",
+        text: "สวัสดีคุณพี่ รับอะไรดีคะ",
+      },
+    ]);
   } else if (text === "สุ่มเพลง") {
+    const music = getMusicRandom();
+    const arr = [
+      "Chord: " + music[0],
+      "Metronome: " + music[4],
+      "Link: " + music[2],
+    ];
 
     return replyMessages(replyToken, [
       {
         type: "text",
-        text: "กรุณานำ QR code นี้แสกนที่เครื่อง",
+        text: arr.join("\n"),
       },
       {
         type: "image",
-        originalContentUrl: QR_URL + userId,
-        previewImageUrl: QR_URL + userId,
+        originalContentUrl: music[3],
+        previewImageUrl: music[3],
       },
     ]);
-    //   } else if (text == "เช็คคะแนน") {
-    //     const totalPoint = getTotalPoint(userId);
-    //     return replyMessages(replyToken, "คะแนนของคุณคือ " + addComma(totalPoint));
-    //   } else if (text == "เช็คประวัติ") {
-    //     const limit = 3;
-    //     const memberHistorys = getMemberHistorys(userId, limit);
-    //     let messages = [
-    //       {
-    //         type: "text",
-    //         text: "ประวัติการทำรายการ\n" + limit + " รายการล่าสุด",
-    //       },
-    //     ];
-    //     memberHistorys.some((memberHistory, index) => {
-    //       messages.push({
-    //         type: "text",
-    //         text:
-    //           memberHistory[0] +
-    //           "\n" +
-    //           memberHistory[1] +
-    //           "\n" +
-    //           memberHistory[2] +
-    //           " " +
-    //           memberHistory[3] +
-    //           "P",
-    //       });
-    //     });
-    //     return replyMessages(replyToken, messages);
-    //   } else if (text == "เช็คการแลกคะแนน") {
-    //     const limit = 3;
-    //     const exchangeRequests = getExchangeRequests(userId, limit);
-    //     let messages = [
-    //       {
-    //         type: "text",
-    //         text: "การแลกคะแนนของคุณ\n" + limit + " รายการล่าสุด",
-    //       },
-    //     ];
-    //     exchangeRequests.some((exchangeRequest, index) => {
-    //       messages.push({
-    //         type: "text",
-    //         text:
-    //           exchangeRequest[0] +
-    //           "\nขอแลกคะแนน " +
-    //           exchangeRequest[2] +
-    //           "P เป็นเงิน " +
-    //           exchangeRequest[3] +
-    //           " บาท" +
-    //           "\nพร้อมเพย์: " +
-    //           exchangeRequest[4] +
-    //           "\nสถานะ: " +
-    //           exchangeRequest[5],
-    //       });
-    //     });
-    //     return replyMessages(replyToken, messages);
-    //   } else if (text == "แลกคะแนน") {
-    //     // เช็คพร้อมเพย์
-    //     const promptPay = getPromptPay(userId);
-    //     if (!promptPay) {
-    //       return replyMessages(replyToken, [
-    //         {
-    //           type: "text",
-    //           text: "กรุณากรอกหมายเลขพร้อมเพย์",
-    //         },
-    //         {
-    //           type: "text",
-    //           text: "พิมพ์ PP-หมายเลขพร้อมเพย์\nตัวอย่าง PP-123456789",
-    //         },
-    //       ]);
-    //     }
-    //     // เช็คการตั้งค่าแต้ม
-    //     const exchangeRate = getExchangeRate();
-    //     if (!exchangeRate || exchangeRate <= 0) {
-    //       return replyMessages(replyToken, "กรุณาทำรายการอีกครั้งภายหลัง");
-    //     }
-    //     // แสดงเมนูให้เลือก
-    //     return replyMessages(replyToken, [
-    //       {
-    //         type: "text",
-    //         text: "กรุณาเลือกจำนวนที่ต้องการ",
-    //         quickReply: {
-    //           items: [
-    //             {
-    //               type: "action",
-    //               action: {
-    //                 type: "message",
-    //                 label: "20 บาท -" + addComma(20 * exchangeRate) + "P",
-    //                 text: "แลกคะแนน-20",
-    //               },
-    //             },
-    //             {
-    //               type: "action",
-    //               action: {
-    //                 type: "message",
-    //                 label: "50 บาท -" + addComma(50 * exchangeRate) + "P",
-    //                 text: "แลกคะแนน-50",
-    //               },
-    //             },
-    //             {
-    //               type: "action",
-    //               action: {
-    //                 type: "message",
-    //                 label: "100 บาท -" + addComma(100 * exchangeRate) + "P",
-    //                 text: "แลกคะแนน-100",
-    //               },
-    //             },
-    //             {
-    //               type: "action",
-    //               action: {
-    //                 type: "message",
-    //                 label: "200 บาท -" + addComma(200 * exchangeRate) + "P",
-    //                 text: "แลกคะแนน-200",
-    //               },
-    //             },
-    //           ],
-    //         },
-    //       },
-    //     ]);
   } else if (text.indexOf("คอร์ด") !== -1) {
-    // เช็คพร้อมเพย์
-    const promptPay = getPromptPay(userId);
-    if (!promptPay) {
-      return replyMessages(replyToken, [
-        {
-          type: "text",
-          text: "กรุณากรอกหมายเลขพร้อมเพย์",
-        },
-        {
-          type: "text",
-          text: "พิมพ์ PP-หมายเลขพร้อมเพย์\nตัวอย่าง PP-123456789",
-        },
-      ]);
-    }
-    // เช็คการตั้งค่าแต้ม
-    const exchangeRate = getExchangeRate();
-    if (!exchangeRate || exchangeRate <= 0) {
-      return replyMessages(replyToken, "กรุณาทำรายการอีกครั้งภายหลัง");
-    }
-    // ตัดข้อความ
-    const textSplit = text.split("-");
-    if (!textSplit[1]) {
-      return replyMessages(replyToken, "ไม่พบจำนวนเงินที่ต้องการ");
-    }
-    // จำนวนเงิน
-    const amount = Number(textSplit[1]);
-    const totalPoint = getTotalPoint(userId);
-    const exchangePoint = amount * exchangeRate;
-    // เช็คคะแนนคงเหลือ
-    if (exchangePoint > totalPoint) {
-      return replyMessages(
-        replyToken,
-        "คะแนนไม่เพียงพอ\nคะแนนของคุณคือ " + addComma(totalPoint) + "P",
-      );
-    }
-    // เพิ่มการแลกคะแนน
-    addExchange(userId, exchangePoint, amount);
-    return replyMessages(
-      replyToken,
-      "แลกคะแนนสำเร็จ\nกรุณารอการโอนเงินจากแอดมิน",
-    );
+    const name = text.replace(/^คอร์ด\s*/, "");
+    const music = getMusic(name);
+    return replyMessages(replyToken, [
+      {
+        type: "text",
+        text: "คอร์ดเพลง " + music[0],
+      },
+      {
+        type: "image",
+        originalContentUrl: music[3],
+        previewImageUrl: music[3],
+      },
+    ]);
   }
+
   return replyMessages(replyToken, "ไม่พบเมนูที่ต้องการ!");
 }
 
