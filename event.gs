@@ -16,12 +16,15 @@ function message(event) {
 function keywords(userId, text, replyToken = null) {
   if (text === "userId") {
     return replyMessages(replyToken, "userId ของคุณคือ \n" + userId);
-  } else if (text === "เมนู") {
+  } else if (text === "เมนู" || text === "น้องๆ") {
     // แสดงเมนูให้เลือก
     return replyMessages(replyToken, [
       {
         type: "text",
-        text: "กรุณาเลือกเมนูที่ต้องการ",
+        text:
+          text === "เมนู"
+            ? "เลือกเมนูที่ต้องการได้เลยจ้า"
+            : "สวัสดีคุณพี่ รับอะไรดีคะ",
         quickReply: {
           items: [
             {
@@ -42,14 +45,6 @@ function keywords(userId, text, replyToken = null) {
             },
           ],
         },
-      },
-    ]);
-  } else if (text === "น้องๆ") {
-    // แสดงเมนูให้เลือก
-    return replyMessages(replyToken, [
-      {
-        type: "text",
-        text: "สวัสดีคุณพี่ รับอะไรดีคะ",
       },
     ]);
   } else if (text === "สุ่มเพลง") {
