@@ -66,6 +66,7 @@ function getMusic(text) {
   const sheetFile = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = sheetFile.getSheetByName("music");
   const lastRow = sheet.getLastRow();
+  const textLowerCase = text.toLowerCase();
 
   // ดึงข้อมูล
   const musics = sheet
@@ -76,7 +77,10 @@ function getMusic(text) {
 
   // every - some - forEach
   musics.some((music, index) => {
-    if (music[0] === text || music[1].includes(text)) {
+    if (
+      music[0].toLowerCase() === textLowerCase ||
+      music[1].toLowerCase().includes(textLowerCase)
+    ) {
       musicData = music;
       return true;
     }
@@ -87,7 +91,7 @@ function getMusic(text) {
   }
 
   musics.some((music, index) => {
-    if (music[1].includes(text)) {
+    if (music[1].toLowerCase().includes(textLowerCase)) {
       musicData = music;
       return true;
     }

@@ -74,6 +74,16 @@ function keywords(userId, text, replyToken = null) {
   } else if (text.indexOf("คอร์ด") !== -1) {
     const name = text.replace(/^คอร์ด\s*/, "");
     const music = getMusic(name);
+
+    if (!music) {
+      return replyMessages(replyToken, [
+        {
+          type: "text",
+          text: "ไม่พบคอร์ดเพลง",
+        },
+      ]);
+    }
+
     return replyMessages(replyToken, [
       {
         type: "text",
